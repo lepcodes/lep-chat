@@ -8,6 +8,7 @@ import UserMessage from './UserMessage';
 import BotMessage from './BotMessage';
 import type { Message, MessageHistory } from '../types';
 import PulseLoader from 'react-spinners/PulseLoader';
+import { GoogleGenAI, Chat as ChatType } from '@google/genai';
 
 const messages: Message[] = [
   // { id: 1, text: 'Hello', isUser: true },
@@ -32,12 +33,29 @@ const messages: Message[] = [
   // { id: 10, text: 'I am a web developer', isUser: false },
 ];
 
-export default function Chat() {
+export default function Chat({chatRole, apiKey, modelName} : {chatRole: string, apiKey: string, modelName: string}) {
   const [waitingResponse, setWaitingResponse] = useState<boolean>(false);
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [messageHistory, setMessageHistory] = useState<MessageHistory>(messages);
   const [firstMessage, setFirstMessage] = useState<boolean>(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const chatRef = useRef<ChatType>(null);
+
+  useEffect(() => {
+    try {
+      const googleGenAI = new GoogleGenAI({apiKey: apiKey});
+      const chat = googleGenAI.chats.create({
+        model: modelName,
+        config: {
+          systemInstruction: chatRole
+        }
+      })
+      chatRef.current = chat;
+      console.log("chat initialized")
+    } catch (error) {
+      console.error(error)
+    }
+  }, [chatRole, apiKey, modelName])
 
   const updateMessageState = () => {
       setMessageHistory((prevHistory) => {
@@ -82,61 +100,23 @@ export default function Chat() {
 
   useEffect(() => {
     if (waitingResponse) {
-      // fetch("https://openrouter.ai/api/v1/chat/completions", {
-      //   method: "POST",
-      //   headers: {
-      //     "Authorization": "Bearer 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",
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify({
-      //     model: "deepseek/deepseek-r1-0528:free",
-      //     messages: [
-      //       {
-      //         role: "user",
-      //         content: messageHistory[messageHistory.length - 1].text
-      //       }
-      //     ]
-      //   })
-      // })
-      //   .then(response => {
-      //     if (!response.ok) {
-      //       throw new Error(`HTTP error! status: ${response.status}`);
-      //     }
-      //     return response.json();
-      //   })
-      //   .then(data => {
-      //     console.log(data.choices[0].message.content)
-      //     setMessageHistory((prevHistory) => {
-      //       return ([...prevHistory, {id: prevHistory.length + 1, text: data.choices[0].message.content, isUser: false }])
-      //     })
-      //     setCurrentMessage("")
-      //     setWaitingResponse(false)
-      //   })
-      //   .catch(error => {
-      //     console.error("Error:", error);
-      //   });
-      
-      const filePath = 'src/test/test.md';
-      fetch(filePath)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.text();
-      })
-      .then((text) => {
-        console.log(text);
-        setMessageHistory((prevHistory) => {
-          return ([...prevHistory, {id: prevHistory.length + 1, text: text, isUser: false }])
+      const chat = chatRef.current;
+      if (chat) {
+        chat.sendMessage({
+          message: messageHistory[messageHistory.length - 1].text
         })
-        setCurrentMessage("");
-        setWaitingResponse(false);
-      })
-      .catch((error) =>
-        console.error('Error al cargar el archivo Markdown:', error)
-      );
-
-
+        .then((response) => {
+          const responseText = response.text===undefined ? "" : response.text;
+          setMessageHistory((prevHistory) => {
+            return ([...prevHistory, {id: prevHistory.length + 1, text: responseText, isUser: false }])
+          }) 
+          setCurrentMessage("")
+          setWaitingResponse(false)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+      }
       // setTimeout(() => {
       //   setMessageHistory((prevHistory) => {
       //     return ([...prevHistory, {id: prevHistory.length + 1, text: "There was an error, please try again later", isUser: false }])

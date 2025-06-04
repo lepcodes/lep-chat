@@ -42,8 +42,7 @@ export default function Chat() {
   const updateMessageState = () => {
       setMessageHistory((prevHistory) => {
         return ([...prevHistory, {id: prevHistory.length + 1, text: currentMessage, isUser: true }])
-      }
-      )
+      })
       setCurrentMessage("")
       setWaitingResponse(true)
   }
@@ -83,16 +82,70 @@ export default function Chat() {
 
   useEffect(() => {
     if (waitingResponse) {
-      // Here it will be handle the fetching of the data
-      setTimeout(() => {
+      // fetch("https://openrouter.ai/api/v1/chat/completions", {
+      //   method: "POST",
+      //   headers: {
+      //     "Authorization": "Bearer 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",
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify({
+      //     model: "deepseek/deepseek-r1-0528:free",
+      //     messages: [
+      //       {
+      //         role: "user",
+      //         content: messageHistory[messageHistory.length - 1].text
+      //       }
+      //     ]
+      //   })
+      // })
+      //   .then(response => {
+      //     if (!response.ok) {
+      //       throw new Error(`HTTP error! status: ${response.status}`);
+      //     }
+      //     return response.json();
+      //   })
+      //   .then(data => {
+      //     console.log(data.choices[0].message.content)
+      //     setMessageHistory((prevHistory) => {
+      //       return ([...prevHistory, {id: prevHistory.length + 1, text: data.choices[0].message.content, isUser: false }])
+      //     })
+      //     setCurrentMessage("")
+      //     setWaitingResponse(false)
+      //   })
+      //   .catch(error => {
+      //     console.error("Error:", error);
+      //   });
+      
+      const filePath = 'src/test/test.md';
+      fetch(filePath)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((text) => {
+        console.log(text);
         setMessageHistory((prevHistory) => {
-          return ([...prevHistory, {id: prevHistory.length + 1, text: "There was an error, please try again later", isUser: false }])
+          return ([...prevHistory, {id: prevHistory.length + 1, text: text, isUser: false }])
         })
-        setCurrentMessage("")
-        setWaitingResponse(false)
-      }, 5000)
+        setCurrentMessage("");
+        setWaitingResponse(false);
+      })
+      .catch((error) =>
+        console.error('Error al cargar el archivo Markdown:', error)
+      );
+
+
+      // setTimeout(() => {
+      //   setMessageHistory((prevHistory) => {
+      //     return ([...prevHistory, {id: prevHistory.length + 1, text: "There was an error, please try again later", isUser: false }])
+      //   })
+      //   setCurrentMessage("")
+      //   setWaitingResponse(false)
+      // }, 5000)
     }
-  }, [waitingResponse])
+  }, [waitingResponse, messageHistory])
 
   useEffect(() => {
     console.log("Go down")
@@ -105,64 +158,64 @@ export default function Chat() {
       });
     }
   }, [messageHistory])
+
   return (  
     <>
-    <div className={`flex h-full w-full`}>
-      <div className="flex-1 w-full flex flex-col items-center justify-center">
-          <div className={`flex flex-1 flex-col items-center w-full min-w-[400px] overflow-auto mt-8
-                          [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%)]
-                          [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_10%)]
-                          ${messageHistory.length == 0 ? 'justify-center' : 'justify-start'}`}
-            style={{ scrollbarGutter: 'stable' }}
-            ref={scrollRef}
-          >
-            {
-              messageHistory.length == 0 &&
-              <div className={`flex flex-col items-center justify-center w-full max-w-[800px] mb-10 ${firstMessage ? '' : 'flex-out'}`}>
-                <ChatHeader className={`${firstMessage ? 'chat-header-in' : 'chat-header-out'}`}/>
-              </div>
-            }
-            {
-              messageHistory.length >= 1 &&
-              <>
-                <div className='flex h-15 flex-shrink-0'/>
-                <div className='flex flex-col justify-end h-fit w-full max-w-[48rem] gap-4 pb-30 mb-8'>
-                  {messageHistory.map((message, index) => {
-                    if (message.isUser) {
-                      console.log(index)
-                      return <UserMessage message={message} className={`message-in`}/>
-                    }
-                    else {
-                      return <BotMessage message={message} className={`message-in`}/>
-                    }
-                  })}
-                  {waitingResponse && 
-                    <div className='flex justify-start items-center pl-3 pb-1 fade-in'>
-                      <PulseLoader color='#37545c' size={7}/>
-                    </div>
+    <div className={`flex-1 w-full flex flex-col min-h-0 items-center justify-center`}>
+      {
+        messageHistory.length == 0
+        ?
+        <div className={`flex flex-col items-center justify-center w-full max-w-[800px] mb-10 ${firstMessage ? '' : 'flex-out'}`}>
+          <ChatHeader className={`${firstMessage ? 'chat-header-in' : 'chat-header-out'}`}/>
+        </div>
+        :
+        <div className={`flex-out flex flex-col items-center w-full min-w-[400px] overflow-auto px-5 md:px-0
+                        [mask-image:linear-gradient(to_bottom,transparent_0%,black_20%)]
+                        [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_20%)]
+                        ${firstMessage ? 'justify-center' : 'justify-start'}`}
+          style={{ scrollbarGutter: 'stable both-edges' }}
+          ref={scrollRef}
+        >
+          {
+            messageHistory.length >= 1 &&
+            <>
+              <div className='flex h-25 flex-shrink-0'/>
+              <div className='flex flex-col justify-end h-fit w-full max-w-[48rem] gap-4 pb-30 mb-8'>
+                {messageHistory.map((message, index) => {
+                  if (message.isUser) {
+                    console.log(index)
+                    return <UserMessage message={message} className={`message-in`}/>
                   }
-                </div>
-              </>
-            }
-            <div className={`flex ${firstMessage ? 'chat-box-in relative' : 'chat-box-down max-w-[48rem]'} rounded-t-2xl h-32 pb-8 min-w-[500px] bg-white`}>
-              <form className={`flex relative h-full w-full items-start rounded-2xl bg-[#fff] dark:bg-[#1c2b2fa0] border border-gray-300 dark:border-gray-600 overflow-x-auto shadow-lg`}>
-                <textarea id="name"  placeholder="Any doubts or questions? Ask away!"
-                      className="w-[90%] text-[15px] focus:outline-none h-full resize-none p-4 pl-4 dark:text-gray-200 placeholder:text-gray-450 dark:placeholder:text-gray-400"
-                      value={currentMessage}
-                      onChange={(e) => setCurrentMessage(e.target.value)}
-                      onKeyDown={handleKeyDown}/>
-                
-                <button className={`absolute right-2 bottom-2  rounded-sm p-1.5 hover:cursor-pointer focus:outline-none 
-                ${currentMessage.length > 0 ? 'hover:bg-gray-300 hover:cursor-none dark:hover:bg-gray-500' : ''}`}
-                        onClick={handleSendMessage}
-                        disabled={currentMessage.length === 0}>
-                  <SendIcon className={`h-6 w-6 
-                    ${currentMessage.length > 0 ? 'text-gray-700 dark:text-gray-100 stroke-2' : 'text-gray-500 stroke-1'}`}/>
-                </button>
-              </form>
-            </div>
-          </div>
-                
+                  else {
+                    return <BotMessage message={message} className={`message-in`}/>
+                  }
+                })}
+                {waitingResponse && 
+                  <div className='flex justify-start items-center pl-3 pb-1 fade-in'>
+                    <PulseLoader color='#37545c' size={7}/>
+                  </div>
+                }
+              </div>
+            </>
+          }
+        </div>
+      }
+        <div className='flex w-full justify-center px-5 md:px-0 px-4 md:px-0'>
+          <form className={`flex relative chat-box-in ${firstMessage ? '' : 'chat-box-down '} max-w-[48rem] h-26 mb-4 items-start rounded-2xl bg-[#fff] dark:bg-[#2d3536] border border-gray-300 dark:border-transparent overflow-x-auto shadow-lg`}>
+            <textarea id="name" placeholder="Any doubts or questions? Ask away!"
+                  className="text-area-in w-[90%] text-[15px] focus:outline-none h-full resize-none p-4 pl-4 dark:text-gray-200 placeholder:text-gray-450 dark:placeholder:text-gray-400"
+                  value={currentMessage}
+                  onChange={(e) => setCurrentMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}/>
+            
+            <button className={`absolute right-2 bottom-2  rounded-sm p-1.5 hover:cursor-pointer focus:outline-none 
+            ${currentMessage.length > 0 ? 'hover:bg-gray-300 hover:cursor-none dark:hover:bg-gray-500' : ''}`}
+                    onClick={handleSendMessage}
+                    disabled={currentMessage.length === 0}>
+              <SendIcon className={`h-6 w-6 
+                ${currentMessage.length > 0 ? 'text-gray-700 dark:text-gray-100 stroke-2' : 'text-gray-500 stroke-1'}`}/>
+            </button>
+          </form> 
         </div>
       </div>
     </>

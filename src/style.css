@@ -1,6 +1,45 @@
-@import "tailwindcss";
-@plugin '@tailwindcss/typography';
 @custom-variant dark (&:where(.dark, .dark *));
+
+::-webkit-scrollbar {
+  width: 10px; /* Width of the entire scrollbar */
+  height: 10px; /* Height of the horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Light mode track color (e.g., gray-100) */
+  border-radius: 10px;
+}
+html.dark ::-webkit-scrollbar-track {
+  background: transparent ; /* Dark mode track color (e.g., gray-700) */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #5c5c5c; /* Light mode thumb color (e.g., gray-500) */
+  border-radius: 10px;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #545454; /* Dark mode thumb color (e.g., gray-500 or gray-400) */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Light mode thumb hover color (e.g., gray-600) */
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #7b7b7b; /* Dark mode thumb hover color (e.g., gray-400 or gray-300) */
+}
+
+::-webkit-scrollbar-corner {
+  background: blue; /* Light mode thumb corner color (e.g., gray-100) */
+}
+html.dark ::-webkit-scrollbar-corner {
+  background: red; /* Dark mode thumb corner color (e.g., gray-700) */
+} 
+html {
+  background-color: white;
+}
+html.dark {
+  background-color: #101616;
+}
 
 @layer components {
   @theme {
@@ -14,7 +53,9 @@
     bg-[linear-gradient(45deg,var(--clr-2-5),var(--clr-3))]
     dark:bg-[linear-gradient(45deg,var(--clr-1),var(--clr-2),var(--clr-3))];
   }
-
+  .markdown > * {
+    all: revert;
+  }
   @keyframes fade-out2 {
     from {
       opacity: 1;
@@ -22,6 +63,7 @@
     }
     to {
       opacity: 0;
+      visibility: hidden;
       transform: translateY(-100%);
     }
   }
@@ -38,7 +80,7 @@
     }
   }
   .flex-out {
-    animation: flex-out 0.5s ease-in-out forwards;
+    animation: flex-out .5s ease-in-out forwards;
   }
 
   @keyframes fade-in-bt {
@@ -91,37 +133,64 @@
 
   @keyframes chat-box-in {
     0% {
-      min-width: 300px;
-      width: 100px;
+      width: 0%;
+      min-width: 0%;
       opacity: 0;
-      /* transform: translateY(50%); */
+      visibility: hidden;
     }
     100% {
-      width: 33%;
       min-width: 400px;
+      width: 33%;
       opacity: 1;
       visibility: visible;
-      /* transform: translateY(0); */
     }
   }
   .chat-box-in {
     visibility: hidden;
-    animation: chat-box-in 0.5s ease-in-out forwards 1s;
+    animation: chat-box-in .5s ease-in-out forwards 1s;
+  }
+
+  @keyframes text-area-in {
+    0% {
+      visibility: hidden;
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  .text-area-in {
+    visibility: hidden;
+    animation: text-area-in 0.5s ease-in-out forwards 1.5s;
   }
 
   @keyframes chat-box-down {
     0% {
+      transform: translateY(0);
       width: 33%;
-      height: 8rem;
+      min-width: 400px;
+      height: 6.5rem;
+    }
+    50% {
+      transform: translateY(-1rem);
+      width: 33%;
+      height: 6.5rem;
     }
     100% {
+      transform: translateY(-1rem);
       width: 100%;
-      height: 8.5rem;
-      position: absolute;
-      bottom: 0rem
+      height: 7rem;
     }
   }
   .chat-box-down {
-    animation: chat-box-down 0.5s ease-in-out forwards .5s;
+    visibility: visible;
+    opacity: 1;
+    width: 33%;
+    min-width: 400px;
+    height: 6.5rem;
+    animation: chat-box-down 0.8s ease forwards 0.2s;
   }
 }
+
+@source "../dist";

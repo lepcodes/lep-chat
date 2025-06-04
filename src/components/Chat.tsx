@@ -8,7 +8,6 @@ import UserMessage from './UserMessage';
 import BotMessage from './BotMessage';
 import type { Message, MessageHistory } from '../types';
 import PulseLoader from 'react-spinners/PulseLoader';
-import { GoogleGenAI, Chat as ChatType } from '@google/genai';
 
 const messages: Message[] = [
   // { id: 1, text: 'Hello', isUser: true },
@@ -33,44 +32,12 @@ const messages: Message[] = [
   // { id: 10, text: 'I am a web developer', isUser: false },
 ];
 
-export default function Chat({chatRole, apiKey, modelName} : {chatRole: string, apiKey: string, modelName: string}) {
+export default function Chat( {onGetResponse} : {onGetResponse: (message: string) => Promise<string>}) {
   const [waitingResponse, setWaitingResponse] = useState<boolean>(false);
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [messageHistory, setMessageHistory] = useState<MessageHistory>(messages);
   const [firstMessage, setFirstMessage] = useState<boolean>(true);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const chatRef = useRef<ChatType>(null);
-
-  useEffect(() => {
-    try {
-      const googleGenAI = new GoogleGenAI({apiKey: apiKey});
-      const chat = googleGenAI.chats.create({
-        model: modelName,
-        config: {
-          systemInstruction: chatRole
-        }
-      })
-      chatRef.current = chat;
-      console.log("chat initialized")
-    } catch (error) {
-      console.error(error)
-    }
-  }, [chatRole, apiKey, modelName])
-
-  const updateMessageState = () => {
-      setMessageHistory((prevHistory) => {
-        return ([...prevHistory, {id: prevHistory.length + 1, text: currentMessage, isUser: true }])
-      })
-      setCurrentMessage("")
-      setWaitingResponse(true)
-  }
-
-  const messageTimeout = () => {
-    setFirstMessage(false)
-    setTimeout(() => {
-      updateMessageState()
-    }, 1500)
-  }
 
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault();
@@ -79,7 +46,7 @@ export default function Chat({chatRole, apiKey, modelName} : {chatRole: string, 
         messageTimeout()
       }
       else {
-        updateMessageState()
+        addQuestionToHistory()
       }
     }
   }
@@ -92,46 +59,44 @@ export default function Chat({chatRole, apiKey, modelName} : {chatRole: string, 
           messageTimeout()
         }
         else {
-          updateMessageState()
+          addQuestionToHistory()
         }
       }
     }
   };
 
-  useEffect(() => {
-    if (waitingResponse) {
-      const chat = chatRef.current;
-      if (chat) {
-        chat.sendMessage({
-          message: messageHistory[messageHistory.length - 1].text
-        })
-        .then((response) => {
-          const responseText = response.text===undefined ? "" : response.text;
-          setMessageHistory((prevHistory) => {
-            return ([...prevHistory, {id: prevHistory.length + 1, text: responseText, isUser: false }])
-          }) 
-          setCurrentMessage("")
-          setWaitingResponse(false)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-      }
-      // setTimeout(() => {
-      //   setMessageHistory((prevHistory) => {
-      //     return ([...prevHistory, {id: prevHistory.length + 1, text: "There was an error, please try again later", isUser: false }])
-      //   })
-      //   setCurrentMessage("")
-      //   setWaitingResponse(false)
-      // }, 5000)
+    const messageTimeout = () => {
+      setFirstMessage(false)
+      setTimeout(() => {
+        addQuestionToHistory()
+      }, 1500)
     }
-  }, [waitingResponse, messageHistory])
+
+  const addQuestionToHistory = () => {
+      setMessageHistory((prevHistory) => {
+        return ([...prevHistory, {id: prevHistory.length + 1, text: currentMessage, isUser: true }])
+      })
+      setCurrentMessage("")
+      handleWaitingResponse(currentMessage)
+  }
+
+  const handleWaitingResponse = async (message: string) => {
+    try {
+      setWaitingResponse(true)
+      const response = await onGetResponse(message)
+      setMessageHistory((prevHistory) => {
+        return ([...prevHistory, {id: prevHistory.length + 1, text: response, isUser: false }])
+      }) 
+      setWaitingResponse(false)
+    }
+    catch (error) {
+      console.error(error)
+    }
+  }
 
   useEffect(() => {
-    console.log("Go down")
     if (scrollRef.current) {
       const scrollElement = scrollRef.current;
-      // Use the scroll() method with behavior: 'smooth'
       scrollElement.scroll({
         top: scrollElement.scrollHeight,
         behavior: 'smooth'

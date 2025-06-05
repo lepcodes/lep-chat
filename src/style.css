@@ -230,12 +230,14 @@ html.dark {
       height: 7rem;
     }
   }
-  .sm\:chat-box-down {
-    visibility: visible;
-    opacity: 1;
-    width: 100%;
-    height: 6.5rem;
-    animation: chat-box-down-sm 0.8s ease forwards 0.2s;
+  @media (max-width: 768px) {
+    .sm\:chat-box-down {
+      visibility: visible;
+      opacity: 1;
+      width: 100%;
+      height: 6.5rem;
+      animation: chat-box-down-sm 0.8s ease forwards 0.2s;
+    } 
   }
 }
 

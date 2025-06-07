@@ -145,7 +145,7 @@ export default function Chat( {onGetResponse} : {onGetResponse: (message: string
           }
         </div>
       }
-        <div className='flex w-full justify-center px-5 md:px-0 px-4 md:px-0'>
+        <div className='flex w-full justify-center md:px-0 px-4 md:px-0'>
           <form className={`flex relative sm:chat-box-in md:chat-box-in ${firstMessage ? 'max-w-[400px]' : 'sm:chat-box-down md:chat-box-down'} md:max-w-[48rem] h-26 mb-4 items-start rounded-2xl bg-[#fff] dark:bg-[rgb(45,53,54)] border border-gray-300 dark:border-transparent overflow-x-auto shadow-lg`}>
             <textarea id="name" placeholder="Any doubts or questions? Ask away!"
                   className="text-area-in w-[90%] text-[15px] focus:outline-none h-full resize-none p-4 pl-4 dark:text-gray-200 placeholder:text-gray-450 dark:placeholder:text-gray-400"

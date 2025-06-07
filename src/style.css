@@ -1,46 +1,45 @@
-@import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* --- Standard CSS (No changes needed) --- */
 ::-webkit-scrollbar {
-  width: 10px; /* Width of the entire scrollbar */
-  height: 10px; /* Height of the horizontal scrollbar */
+width: 10px;
+height: 10px;
 }
-
 ::-webkit-scrollbar-track {
-  background: transparent; /* Light mode track color (e.g., gray-100) */
+  background: transparent;
   border-radius: 10px;
 }
 html.dark ::-webkit-scrollbar-track {
-  background: transparent ; /* Dark mode track color (e.g., gray-700) */
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #5c5c5c; /* Light mode thumb color (e.g., gray-500) */
+  background: #5c5c5c;
   border-radius: 10px;
 }
 html.dark ::-webkit-scrollbar-thumb {
-  background: #545454; /* Dark mode thumb color (e.g., gray-500 or gray-400) */
+  background: #545454;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Light mode thumb hover color (e.g., gray-600) */
+  background: #555;
 }
 html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #7b7b7b; /* Dark mode thumb hover color (e.g., gray-400 or gray-300) */
+  background: #7b7b7b;
 }
-
 ::-webkit-scrollbar-corner {
-  background: blue; /* Light mode thumb corner color (e.g., gray-100) */
+  background: blue;
 }
 html.dark ::-webkit-scrollbar-corner {
-  background: red; /* Dark mode thumb corner color (e.g., gray-700) */
-} 
+  background: red;
+}
 html {
   background-color: white;
 }
 html.dark {
   background-color: #101616;
 }
+
 
 @layer components {
   @theme {
@@ -241,5 +240,3 @@ html.dark {
     } 
   }
 }
-
-@source "../dist";

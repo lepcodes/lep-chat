@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import styles from './Chat.module.css';
+import prefligth from './preFlight.module.css';
 import clsx from 'clsx';
 
 import SendIcon from '../icons/SendIcon';
@@ -100,7 +101,7 @@ export default function Chat({
 
   return (  
     <>
-    <div className={styles.chatContainer}>
+    <div className={clsx(styles.chatContainer, prefligth.preFlight)}>
       {
         messageHistory.length == 0
         ?

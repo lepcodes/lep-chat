@@ -1,15 +1,1 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-  @theme {
-    --clr-1: #b5e9db;
-    --clr-2: #87cbc9;
-    --clr-2-5: #24bab5;
-    --clr-3: #177774;
-  }
-  .markdown > * {
-    all: revert;
-  }
-}
+@layer base, components;

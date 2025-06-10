@@ -34,6 +34,7 @@ export default [
         extract: path.resolve('dist/style.css'), // Or your desired output CSS filename
         minimize: true,
         sourceMap: true,
+        modules: true,
         // No need to list plugins here if postcss.config.js is present and correct
       }),
     ],

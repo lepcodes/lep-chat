@@ -18,7 +18,7 @@ border: 0 solid;
 }
 .preFlight :where(p, h1, h2, h3, h4, h5, h6, ul, ol, dl, dd, figure, blockquote) {
   margin: 0;
-  @apply prose dark:prose-invert;
+  @apply prose dark:prose-invert max-w-full;
 }
 
 /* Y mantén el reseteo de padding solo donde sea estrictamente necesario, como en listas */

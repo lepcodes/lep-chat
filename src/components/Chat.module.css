@@ -151,7 +151,7 @@
 }
 /* Base styles for the form element */
 .chatBoxForm {
-  @apply flex relative md:max-w-[48rem] h-28 mb-4 items-start rounded-2xl bg-[#fff] dark:bg-[rgb(45,53,54)] border border-gray-300 dark:border-transparent overflow-x-auto shadow-lg;
+  @apply flex relative md:max-w-[48rem] h-28 mb-4 items-start rounded-2xl bg-[#fff] dark:bg-[rgb(50,50,50)] border border-gray-300 dark:border-transparent overflow-x-auto shadow-lg;
   
   /* Applying custom animation classes */
   @apply chat-box-in-sm chat-box-in-md; 

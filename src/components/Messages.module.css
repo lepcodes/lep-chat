@@ -7,7 +7,7 @@
 }
 
 .userMessageContainer {
-    @apply relative flex flex-col gap-2 self-end p-3 max-w-[98%] bg-[#dbdbdb91] dark:bg-[#414e625e] rounded-xl overflow-x-auto;
+    @apply relative flex flex-col gap-2 self-end p-3 max-w-[98%] bg-[#dbdbdb91] dark:bg-[#5e65685e] rounded-xl overflow-x-auto;
 }
 
 .userProse {

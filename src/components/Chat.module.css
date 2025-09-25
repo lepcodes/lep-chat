@@ -1,0 +1,288 @@
+@layer components.chat {
+.chatContainer {
+    @apply flex-1 w-full flex flex-col min-h-0 items-center justify-center;
+}
+
+.chatHeaderParent {
+    @apply flex flex-col items-center justify-center w-full max-w-[800px] mb-10;
+}
+
+@keyframes flexOut {
+0% {
+    flex: 0 1 0;
+}
+100% {
+    flex: 1;
+}
+}
+.flexOut {
+  animation: flexOut .5s ease-in-out forwards;
+}
+
+@keyframes fade-out2 {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+  }
+}
+.chatHeaderOut {
+  animation: fade-out2 0.5s ease-in-out forwards; 
+}
+
+@keyframes chat-header-in {
+  0% {
+    opacity: 0;
+    transform: translateY(100%) scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+    -webkit-filter:blur(2px);
+  }
+  75% {
+    transform: translateY(0) scale(1) blur(0px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-filter: blur(0px);
+  }
+}
+.chatHeaderIn {
+  animation: chat-header-in 1s ease-in-out 0.1s;
+}
+
+.chatMessageScroll {
+  @apply flex flex-col items-center w-full md:min-w-[400px] overflow-auto mt-8 px-4 md:px-0 [mask-image:linear-gradient(to_bottom,transparent_0%,black_20%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_20%)]
+}
+
+.justifyCenter {
+  @apply justify-center;
+}
+.justifyStart {
+  @apply justify-start;
+}
+
+.chatInitialSpacer {
+  @apply flex h-24 flex-shrink-0;
+}
+
+.chatMessageContainer {
+  @apply flex flex-col justify-end h-fit w-full max-w-[48rem] gap-4 pb-32 mb-8;
+}
+
+@keyframes fade-in-bt {
+  from {
+    opacity: 0;
+    transform: translateY(50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+}
+.messageIn {
+  animation: fade-in-bt 0.5s ease-in-out forwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fade-in {
+  animation: fade-in 1s ease-in-out forwards;
+}
+.pulseLoader {
+  @apply flex justify-start items-center pl-3 pb-1 fade-in;
+}
+
+/* Base container for the whole component */
+.chatBoxContainer {
+  @apply flex w-full justify-center md:px-0 px-5;
+}
+
+@keyframes chat-box-in-md {
+  0% {
+    width: 0%;
+    min-width: 0%;
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    min-width: 400px;
+    width: 33%;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+  @media (min-width: 768px) { /* Assuming default md breakpoint is 768px */
+  .chat-box-in-md {
+    visibility: hidden;
+    animation: chat-box-in-md .5s ease-in-out forwards 1s;
+  }
+}
+
+@keyframes chat-box-in-sm {
+  0% {
+    width: 0%;
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-box-in-sm {
+    visibility: hidden;
+    animation: chat-box-in-sm .5s ease-in-out forwards 1s;
+  }
+}
+/* Base styles for the form element */
+.chatBoxForm {
+  @apply flex relative md:max-w-[48rem] h-28 mb-4 items-start rounded-2xl bg-[#fff] dark:bg-[rgb(50,50,50)] border border-gray-300 dark:border-transparent overflow-x-auto shadow-lg;
+  
+  /* Applying custom animation classes */
+  @apply chat-box-in-sm chat-box-in-md; 
+}
+
+/* --- Variants for the form based on `firstMessage` --- */
+.formInitialState {
+  @apply max-w-[400px] md:max-w-[48rem] ;
+}
+
+ @keyframes chat-box-down {
+    0% {
+      transform: translateY(0);
+      width: 33%;
+      min-width: 400px;
+    }
+    50% {
+      transform: translateY(-1rem);
+      width: 33%;
+    }
+    100% {
+      transform: translateY(-1rem);
+      width: 100%;
+    }
+  }
+  @media (min-width: 768px) { /* Assuming default md breakpoint is 768px */
+    .chat-box-down-md {
+      visibility: visible;
+      opacity: 1;
+      width: 33%;
+      min-width: 400px;
+      animation: chat-box-down 0.8s ease forwards 0.2s;
+    }
+  }
+
+@keyframes chat-box-down-sm {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1rem);
+  }
+  100% {
+    transform: translateY(-1rem);
+  }
+}
+@media (max-width: 768px) {
+  .chat-box-down-sm {
+    visibility: visible;
+    opacity: 1;
+    width: 100%;
+    animation: chat-box-down-sm 0.8s ease forwards 0.2s;
+  } 
+}
+.formDefaultState {
+  /* Applying custom animation classes */
+  @apply chat-box-down-sm chat-box-down-md;
+}
+
+
+@keyframes text-area-in {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+.text-area-in {
+  visibility: hidden;
+  animation: text-area-in 0.5s ease-in-out forwards 1.5s;
+}
+/* Styles for the textarea */
+.chatBoxTextArea {
+  @apply w-[90%] text-[15px] focus:outline-none h-full resize-none p-4 pl-4 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-400 bg-transparent;
+  
+  /* Applying custom animation class */
+  @apply text-area-in;
+}
+
+/* Base styles for the send button */
+.chatBoxButton {
+  @apply absolute right-2 bottom-2 rounded-sm p-1.5 focus:outline-none;
+}
+
+/* --- Variant for the button when there is text --- */
+.buttonActive {
+  @apply hover:bg-gray-300 dark:hover:bg-gray-500 hover:cursor-pointer;
+}
+
+/* --- Variants for the SendIcon's color/stroke --- */
+.iconEnabled {
+  @apply text-gray-500 dark:text-gray-100 stroke-2;
+}
+.iconDisabled {
+  @apply text-gray-700 dark:text-gray-300 stroke-1;
+}
+
+/* Apply to any ::-webkit-scrollbar inside this component's scroll container */
+.chatMessageScroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* The track (the background of the scrollbar) */
+.chatMessageScroll::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+/* The draggable scrolling handle */
+.chatMessageScroll::-webkit-scrollbar-thumb {
+  background: #5c5c5c;
+  border-radius: 10px;
+}
+
+.chatMessageScroll::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.dark .chatMessageScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark .chatMessageScroll::-webkit-scrollbar-thumb {
+  background: #545454;
+}
+
+.dark .chatMessageScroll::-webkit-scrollbar-thumb:hover {
+  background: #7b7b7b;
+}
+}

@@ -2,6 +2,13 @@
 
 **Lep-Chat** is a high-performance, modular React component library engineered to provide a seamless chat interface for AI-driven applications. Built with **React 19** and **TypeScript**, it abstracts the complexities of state management, message rendering, and UI responsiveness, allowing developers to integrate a professional-grade LLM chat experience into any application with minimal configuration.
 
+## Demo
+
+A production-ready reference implementation is available, showcasing a **"Fitness AI"** application built with **Next.js 15** and **Google Gemini**. This demo illustrates advanced customization, backend integration, and real-world usage patterns.
+
+👉 [**Check out the Demo Repository**](https://github.com/lepcodes/lep-chat-demo)
+🪧 [**Visit the Demo Website**](https://lep-chat-demo.vercel.app/)
+
 ## Features & Technical Highlights
 
 - **Library-First Architecture:** Architected as a distributable package using **Rollup** to output optimized ESM and CommonJS bundles along with full type definitions.
